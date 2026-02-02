@@ -1,5 +1,5 @@
-int pinLED = 4;
-int pinBUT = 1;
+int pinLED = 1;
+int pinBUT = 2;
 int pinMOT = 9;
 bool ledState = LOW;           // Stato attuale del LED
 bool lastButtonState = LOW;    // Ultimo stato del pulsante
