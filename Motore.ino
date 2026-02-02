@@ -15,10 +15,11 @@ void loop() {
   // put your main code here, to run repeatedly
   currentButtonState = digitalRead(pinBUT);
 
-  if (digitalRead(pinBUT) == HIGH && lastButtonState == LOW){
+  if (digitalRead(pinBUT) == HIGH && lastButtonState != currentButtonState){
     ledState = !ledState;
     digitalWrite(pinLED, ledState);
-    delay(100); // per evitare il debuncing 
+    // delay per evitare problemi
+    delay(50);
   }
   lastButtonState = currentButtonState;
 }
