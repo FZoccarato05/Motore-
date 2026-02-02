@@ -1,6 +1,9 @@
 int pinLED = 1;
 int pinBUT = 2;
-int b = 0;
+
+bool ledState = LOW;           // Stato attuale del LED
+bool lastButtonState = LOW;    // Ultimo stato del pulsante
+bool currentButtonState = LOW; // Stato corrente del pulsante
 
 void setup() {
   // put your setup code here, to run once:
@@ -10,15 +13,12 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly
-  
-  if (digitalRead(pinBUT) == HIGH){
-    if(b == 0){
-      digitalWrite(pinLED, HIGH);
-      b = 1;
-    }else{
-      digitalWrite(pinLED, LOW);
-      b = 0;
-    }
+  currentButtonState = digitalRead(pinBUT);
+
+  if (digitalRead(pinBUT) == HIGH && lastButtonState == LOW){
+    ledState = !ledState;
+    digitalWrite(pinLED, ledState);
+    delay(100); // per evitare il debuncing 
   }
-  delay(2000);
+  lastButtonState = currentButtonState;
 }
