@@ -7,6 +7,7 @@ unsigned long timeStop = 0;
 //bool ledState = LOW;           // Stato attuale del LED
 bool lastButtonState = HIGH;    // Ultimo stato del pulsante
 bool currentButtonState = LOW; // Stato corrente del pulsante
+bool stateencover = LOW;
 int pinVel = A0;
 int v;
 int imp = 0;
@@ -80,16 +81,17 @@ void loop() {
   }
  
   more = millis(); 
-  
+  state
 
   while(count < 20){
-    if(digitalRead(pinENC)){
+    if(digitalRead(pinENC) && digitalRead(pinENC) != stateEncover){
       ++count;
+      stateEncover = digitalRead(pinENC;
     }
-
-    
+    time = millis() - more;
+    stateEncover = digitalRead(pinENC);  
   }
-  time = millis() - more;
+  
   s = imp;
   rps = imp/20;
   rpm = rps*60;
