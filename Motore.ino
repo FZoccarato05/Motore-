@@ -1,42 +1,113 @@
-int pinLED = 1;
-int pinBUT = 2;
+int pinLED = 4;
+int pinBUT = 1;
 int pinMOT = 9;
-bool ledState = LOW;           // Stato attuale del LED
-bool motState = LOW;
-int rm;
-bool lastButtonState = LOW;    // Ultimo stato del pulsante
+int pinENC = 2;
+unsigned long timeStart = 0;
+unsigned long timeStop = 0;
+//bool ledState = LOW;           // Stato attuale del LED
+bool lastButtonState = HIGH;    // Ultimo stato del pulsante
 bool currentButtonState = LOW; // Stato corrente del pulsante
+int pinVel = A0;
+int v;
+int imp = 0;
+float s;
+float rps;
+float rpm;
+float count = 0;
+float more;
+float time;
 
 void setup() {
   // put your setup code here, to run once:
   pinMode(pinLED, OUTPUT);
   pinMode(pinBUT, INPUT);
   pinMode(pinMOT, OUTPUT);
+  pinMode(pinENC, INPUT);
+  Serial.begin(115200);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly
-  currentButtonState = digitalRead(pinBUT);
+  timeStart = millis();
+  timeStop = timeStart + 1000;  // 1 secondo
 
-  if (digitalRead(pinBUT) == HIGH && lastButtonState != currentButtonState){
+//  currentButtonState = digitalRead(pinBUT);
+  
+/*  if (digitalRead(pinBUT) == HIGH && lastButtonState != currentButtonState){
     ledState = !ledState;
-    motState = !motState;
     digitalWrite(pinLED, ledState);
-    
-    if(motState == HIGH){
-      for(rm = 0; rm <= 255; rm++){
-        analogWrite(pinMOT, rm);  // gestisce quanta corrente fornisco al motore e di conseguenza la velocità
-      // analog è disponibile solo su alcuni pin ~ (tilde)
-        delay(50);
-      }
-    }else{
-      for(rm = 255; rm >= 0; rm--){
-       analogWrite(pinMOT, rm);
-       delay(50);
-      }
-    }
     // delay per evitare problemi
     delay(100);
+    if(ledState){
+    for(int rm = 0; rm <= 255; rm++){
+      analogWrite(pinMOT, rm);
+      delay(50) ;
+    }
+    }else{
+    for(int rm = 255; rm >= 0; rm -- ){
+      analogWrite(pinMOT, rm);
+      delay (50);
+    }
+    }
   }
-  lastButtonState = currentButtonState;
+  lastButtonState = curren tButtonState; */ 
+
+  if(digitalRead(pinBUT) == HIGH && currentButtonState != lastButtonState){   // cambiare stato attuale di currentButton State
+    currentButtonState = !currentButtonState;
+    lastButtonState = !lastButtonState;
+    
+  }
+
+  if(currentButtonState == HIGH){      // posso cambiare la velocità tramite potenziometro solo currentButtonState == HIGH
+    v = map(analogRead(pinVel), 0, 1023, 0, 255);
+    analogWrite(pinLED, v);
+    analogWrite(pinMOT, v);
+  }else{
+    while(v >= 0){
+      analogWrite(pinMOT, v);
+      analogWrite(pinLED, v);
+      
+      --v;
+    }
+  }  
+
+  if(currentButtonState){
+  while(millis() < timeStop){ // impulsi in 1 secondo
+    if(digitalRead(pinENC)){
+      ++imp;
+      ++count;
+      while(digitalRead(pinENC));
+    }
+  }
+ 
+  more = millis(); 
+  
+
+  while(count < 20){
+    if(digitalRead(pinENC)){
+      ++count;
+    }
+
+    
+  }
+  time = millis() - more;
+  s = imp;
+  rps = imp/20;
+  rpm = rps*60;
+  imp = 0;
+  count = 0;
+ 
+ 
+  
+  
+  Serial.print(" rps = ");  // rotazioni al secondo
+  Serial.print(rps);
+  Serial.print(" rpm = ");  // rotazioni al minuto
+  Serial.print(rpm);
+  Serial.print(" tempo un giro = ");
+  Serial.print(time);
+  Serial.println(" ");
+  
+  }
+
+  delay(1);
 }
