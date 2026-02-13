@@ -86,11 +86,12 @@ void loop() {
     if(digitalRead(pinENC) && digitalRead(pinENC) != stateEncover){
       ++count;
       stateEncover = digitalRead(pinENC);
-    }
-    time = millis() - more;
-    stateEncover = digitalRead(pinENC);  
+    }else{
+   
+    stateEncover = digitalRead(pinENC);
+    }  
   }
-  
+  time = millis() - more;
   s = imp;
   rps = imp/20;
   rpm = rps*60;
